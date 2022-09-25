@@ -1,7 +1,11 @@
-import React from "react";
-import { View } from "react-native";
-
+import { Container, Title } from './styles';
 
 export function Groups() {
-  return <View></View>;
+  return (
+    <Container>
+      <Title>
+        Groups
+      </Title>
+    </Container>
+  );
 }
