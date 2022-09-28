@@ -1,4 +1,3 @@
-import React from "react";
 import { Container, Message } from "./styles";
 
 type Props = {
@@ -8,8 +7,7 @@ type Props = {
 export function ListEmpty({ message }: Props) {
   return (
     <Container>
-      <Message></Message>
-      {message}
+      <Message>{message}</Message>
     </Container>
   );
 }
