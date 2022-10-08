@@ -1,58 +1,72 @@
-import { useState, useCallback } from "react";
-import { FlatList } from "react-native";
+import { useState, useCallback } from 'react';
+import { FlatList } from 'react-native';
 
-import { GroupCard } from "@components/GroupCard";
-import { Header } from "@components/Header";
-import { Highlight } from "@components/Highlight";
-import { ListEmpty } from "@components/ListEmpty";
-import { Button } from "@components/Button";
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
 
-import { Container } from "./styles";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { groupsGetAll } from "@storage/group/groupGetAll";
-import { useEffect } from "react";
+
+import { GroupCard } from '@components/GroupCard';
+import { Header } from '@components/Header';
+import { Highlight } from '@components/Highlight';
+import { ListEmpty } from '@components/ListEmpty';
+import { Button } from '@components/Button';
+
+import { Container } from './styles';
+import { groupsGetAll } from '@storage/group/groupGetAll';
 
 export function Groups() {
   const [groups, setGroups] = useState<string[]>([]);
+
   const navigation = useNavigation();
 
   function handleNewGroup() {
-    navigation.navigate("new");
+    navigation.navigate('new');
   }
 
   async function fetchGroups() {
     try {
       const data = await groupsGetAll();
-      setGroups(data);
+      setGroups(data)
     } catch (error) {
       console.log(error);
     }
   }
 
-  useFocusEffect(
-    useCallback(() => {
-      console.log("attt");
-      
-      fetchGroups();
-    }, [])
-  );
+  function handleOpenGroup(group: string) {
+    navigation.navigate('players', { group })
+  }
+  
+  useFocusEffect(useCallback(() => {
+    fetchGroups()
+  },[]))
+  
 
   return (
     <Container>
       <Header />
-      <Highlight title="Turmas" subtitle="jogue com sua turma" />
+      <Highlight 
+        title="Turmas"
+        subtitle="jogue com sua turma"
+      />
 
-      <FlatList
+      <FlatList 
         data={groups}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => <GroupCard title={item} />}
+        keyExtractor={item => item}
+        renderItem={({ item }) => (
+          <GroupCard 
+            title={item}
+            onPress={() => handleOpenGroup(item)}
+          />
+        )}
         contentContainerStyle={groups.length === 0 && { flex: 1 }}
         ListEmptyComponent={() => (
           <ListEmpty message="Que tal cadastrar a primeira turma?" />
         )}
       />
 
-      <Button title="Criar nova turma" onPress={handleNewGroup} />
+      <Button 
+        title='Criar nova turma'
+        onPress={handleNewGroup}
+      />
     </Container>
   );
 }
